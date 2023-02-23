@@ -12,8 +12,8 @@ const save=async(event)=>
             category
         }
 
-        let response=await axios.post('https://crudcrud.com/api/0e3660f902924cbba6b69cb8afc93449/expenseData',expense)
-        showExpenseOnScreen(response.data)
+        let response=await axios.post('http://localhost:3000/user/add-expense',expense)
+        showExpenseOnScreen(response.data.newExpense)
         
     }
     catch(e)
@@ -24,11 +24,12 @@ const save=async(event)=>
 
 window.addEventListener('DOMContentLoaded',async()=>{
     try{
-        let response=await axios.get('https://crudcrud.com/api/0e3660f902924cbba6b69cb8afc93449/expenseData')
+        let response=await axios.get('http://localhost:3000/user/get-expense')
 
-        for(let i=0;i<response.data.length;i++)
+        for(let i=0;i<response.data.allExpense.length;i++)
         {
-            showExpenseOnScreen(response.data[i])
+            console.log(response.data.allExpense[i])
+            showExpenseOnScreen(response.data.allExpense[i])
         }
     }
     catch(e)
@@ -50,7 +51,7 @@ const showExpenseOnScreen=(expense)=>
 
 const deleteExpense=async(id)=>
 {
-    await axios.delete(`https://crudcrud.com/api/0e3660f902924cbba6b69cb8afc93449/expenseData/${id}`)
+    await axios.delete(`https://localhost:3000/expenseData/${id}`)
     deleteExpenseFromScreen(id)
 }
 
