@@ -14,6 +14,7 @@ const save=async(event)=>
 
         let response=await axios.post('http://localhost:3000/user/add-expense',expense)
         showExpenseOnScreen(response.data.newExpense)
+        await calculateExpense()
         
     }
     catch(e)
@@ -31,6 +32,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
             console.log(response.data.allExpense[i])
             showExpenseOnScreen(response.data.allExpense[i])
         }
+       await calculateExpense()
     }
     catch(e)
     {
@@ -38,21 +40,54 @@ window.addEventListener('DOMContentLoaded',async()=>{
     }
 })
 
+
+
 const showExpenseOnScreen=(expense)=>
 {
     const parentNode=document.getElementById('listOfExpenses')
-    const childHTML=`<li id=${expense._id}> Expense Amount : ${expense.amount} Description : ${expense.description} Category : ${expense.category}
-                    <button onclick=deleteExpense('${expense._id}')>Delete Expense </button>
-                    <button onclick=editUser('${expense.amount}','${expense.description}','${expense.category}','${expense._id}')> Edit Expense</button>
+    const childHTML=`<li id=${expense.id}> Expense Amount : ${expense.amount} Description : ${expense.description} Category : ${expense.category}
+                    <button onclick=deleteExpense('${expense.id}')>Delete Expense </button>
+                    <button onclick=editUser('${expense.amount}','${expense.description}','${expense.category}','${expense.id}')> Edit Expense</button>
                     `
 
     parentNode.innerHTML=parentNode.innerHTML+childHTML;
 }
+const calculateExpense=async()=>{
+    try{
+        let response=await axios.get('http://localhost:3000/user/get-expense')
+        let sum=0
+        for(let i=0;i<response.data.allExpense.length;i++)
+        {
+            sum=sum+response.data.allExpense[i].amount
 
+        }
+        console.log(sum)
+        showTotalExpense(sum)
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
+}
+
+const showTotalExpense=(sum)=>{
+    const parentNode=document.getElementById('totalExpense')
+    const childHTML=`<li>Total : ${sum}</li>`
+    parentNode.innerHTML=childHTML
+
+}
 const deleteExpense=async(id)=>
 {
-    await axios.delete(`https://localhost:3000/expenseData/${id}`)
+    try{
+    console.log(`to be deleted ${id}`)
+    await axios.delete(`http://localhost:3000/user/delete-expense/${id}`)
     deleteExpenseFromScreen(id)
+    await calculateExpense()
+    }
+    catch(e)
+    {
+        console.log(e)
+    }
 }
 
 const deleteExpenseFromScreen=(id)=>{
