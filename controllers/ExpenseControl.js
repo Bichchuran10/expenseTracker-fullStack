@@ -34,16 +34,6 @@ exports.getExpense=async(req,res,next)=>{
     }
 }
 
-exports.calcuateExpense=async(req,res,next)=>{
-    try{
-        const data=await Expense.findAll()
-        res.status(200).json({expenses:data})
-    }
-    catch(e)
-    {
-        console.log(e)
-    }
-}
 
 exports.deleteExpense=async(req,res,next)=>{
     
